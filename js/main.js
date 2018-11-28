@@ -5,7 +5,6 @@ var bounds;
 
 // Initialize Google Maps
 function initMap() {
-    // console.log ('Inside initMap');
     // Create a new blank array for all the listing markers.
     var markers = [];
     // Location
@@ -20,13 +19,19 @@ function initMap() {
         zoom: 8
     });
 
+    // Initialize info window
+    infoWindow = new google.maps.InfoWindow();
+
     bounds = new google.maps.LatLngBounds();
     ko.applyBindings(new ViewModel());
 }
 
 // Location Model
 var LocationMarker = function(data) {
-    // console.log ('Inside Location Marker');
+    // Foursquare credentials
+    var CLIENDID = 'GLEGEPXOLZQL4ZAD0TWQ1XNN1C3CHCA0AVU4S5FGAUFXTFDE';
+    var CLIENTSECRET = 'JGSVBXO4YCAVNK5W23RR4UD4MMU0YAKCHMIEM4VUBQW0ARDE';
+
     var self = this;
 
     this.title = data.title;
@@ -37,10 +42,6 @@ var LocationMarker = function(data) {
 
     this.visible = ko.observable(true);
 
-    // Foursquare credentials
-    var clientID = 'GLEGEPXOLZQL4ZAD0TWQ1XNN1C3CHCA0AVU4S5FGAUFXTFDE';
-    var clientSecret = 'JGSVBXO4YCAVNK5W23RR4UD4MMU0YAKCHMIEM4VUBQW0ARDE';
-
     // Style the markers a bit. This will be our listing marker icon.
     var defaultIcon = makeMarkerIcon('0091ff');
     // Create a "highlighted location" marker color for when the user
@@ -50,21 +51,16 @@ var LocationMarker = function(data) {
     // get JSON request of foursquare data
     var reqURL = 'https://api.foursquare.com/v2/venues/search?ll=' +
         this.position.lat + ',' + this.position.lng + '&client_id=' +
-        clientID + '&client_secret=' + clientSecret + '&v=20160118' +
+        CLIENDID + '&client_secret=' + CLIENTSECRET + '&v=20160118' +
         '&query=' + this.title;
-    // console.log(reqURL);
     $.getJSON(reqURL).done(function(data) {
         var results = data.response.venues[0];
         self.street = results.location.formattedAddress[0] ? results.location.formattedAddress[0] : 'N/A';
         self.city = results.location.formattedAddress[1] ? results.location.formattedAddress[1] : 'N/A';
         self.phone = results.contact.formattedPhone ? results.contact.formattedPhone : 'N/A';
-        // console.log(self.street);
     }).fail(function() {
         alert('Something went wrong with foursquare');
     });
-
-    // Initialize info window
-    var infowindow = new google.maps.InfoWindow();
 
     // Create a marker per location, and put into markers array.
     var marker = new google.maps.Marker({
@@ -78,7 +74,6 @@ var LocationMarker = function(data) {
     self.filterMarkers = ko.computed(function() {
         // set marker and extend bounds (showListings)
         if (self.visible() === true) {
-            // console.log (marker);
             marker.setMap(map);
             bounds.extend(marker.position);
             map.fitBounds(bounds);
@@ -89,7 +84,7 @@ var LocationMarker = function(data) {
 
     // Create an onclick even to open an indowindow at each marker
     marker.addListener('click', function() {
-        populateInfoWindow(this, infowindow, self.street,
+        populateInfoWindow(this, infoWindow, self.street,
             self.city, self.phone);
         toggleBounce(this);
         map.panTo(this.getPosition());
@@ -113,7 +108,6 @@ var LocationMarker = function(data) {
 
 /* View Model */
 var ViewModel = function() {
-    // console.log ('Inside view model');
     var self = this;
 
     this.searchItem = ko.observable('');
@@ -143,15 +137,15 @@ var ViewModel = function() {
     }, self);
 };
 
-function populateInfoWindow(marker, infowindow, street, city, phone) {
+function populateInfoWindow(marker, InfoWindow, street, city, phone) {
     // Check to make sure the infowindow is not already opened on this marker.
-    if (infowindow.marker != marker) {
+    if (InfoWindow.marker != marker) {
         // Clear the infowindow content to give the streetview time to load.
-        infowindow.setContent('');
-        infowindow.marker = marker;
+        InfoWindow.setContent('');
+        InfoWindow.marker = marker;
         // Make sure the marker property is cleared if the infowindow is closed
-        infowindow.addListener('closeclick', function() {
-            infowindow.marker = null;
+        InfoWindow.addListener('closeclick', function() {
+            InfoWindow.marker = null;
         });
 
         var streetViewService = new google.maps.StreetViewService();
@@ -169,7 +163,7 @@ function populateInfoWindow(marker, infowindow, street, city, phone) {
                 var nearStreetViewLocation = data.location.latLng;
                 var heading = google.maps.geometry.spherical.computeHeading(
                     nearStreetViewLocation, marker.position);
-                infowindow.setContent(windowContent + '<div id="pano"></div>');
+                InfoWindow.setContent(windowContent + '<div id="pano"></div>');
                 var panoramaOptions = {
                     position: nearStreetViewLocation,
                     pov: {
@@ -180,7 +174,7 @@ function populateInfoWindow(marker, infowindow, street, city, phone) {
                 var panorama = new google.maps.StreetViewPanorama(
                     document.getElementById('pano'), panoramaOptions);
             } else {
-                infowindow.setContent('<div>' + marker.title + '</div>' +
+                InfoWindow.setContent('<div>' + marker.title + '</div>' +
                     '<div>No Street View Found</div>');
             }
         };
@@ -189,7 +183,7 @@ function populateInfoWindow(marker, infowindow, street, city, phone) {
         streetViewService.getPanoramaByLocation(marker.position,
             radius, getStreetView);
         // Open the infowindow on the correct marker.
-        infowindow.open(map, marker);
+        InfoWindow.open(map, marker);
     }
 }
 
