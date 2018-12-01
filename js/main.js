@@ -16,7 +16,9 @@ function initMap() {
     // The map, centered at the given location
     map = new google.maps.Map(document.getElementById('map'), {
         center: santaCruz,
-        zoom: 8
+        zoom: 8,
+        gestureHandling: 'greedy',
+        draggable: true
     });
 
     // Initialize info window
@@ -152,7 +154,7 @@ function populateInfoWindow(marker, InfoWindow, street, city, phone) {
         var radius = 50;
 
         // Content from Foursquare to be displayed on infowindow
-        var windowContent = '<h4>' + marker.title + '</h4>' +
+        var windowContent = '<h6>' + marker.title + '</h6>' +
             '<p>' + street + "<br>" + city + '<br>' + phone + "</p>"
 
         // In case the status is OK, which means the pano was found, compute

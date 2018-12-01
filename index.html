@@ -7,43 +7,44 @@
         <meta name="author" content="">
         <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
         <link rel="stylesheet" type="text/css" href="css/custom.css">
-        <style>
-        #map {
-        height: 100%;
-        }
-        html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        }
-        </style>
     </head>
     <body>
         <!-- Navigation Bar -->
-        <nav class="navbar navbar-dark bg-dark">
-            <a class="navbar-brand" href="#">
-                Neighborhood Map
-            </a>
-        </nav>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-3">
-                    <form>
-                        <input type="text" class="form-control mr-sm-2" placeholder="Search here" name="q" data-bind="textInput: searchItem, valueUpdate: 'afterkeydown'">
-                        <ul class="list-group" data-bind="foreach: locationList">
-                        <li class="list-group-item list-group-item-action" data-bind="text: title, click: show"></a>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="#">Neighborhood Map</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown dropleft">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Places List
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <form class="px-4 py-2">
+                                    <input type="text" class="form-control" placeholder="Search here" name="q" autofocus="autofocus" data-bind="textInput: searchItem, valueUpdate: 'afterkeydown'">
+                                </form>
+                                <div data-bind="foreach: locationList">
+                                    <a class="dropdown-item" href="#" data-bind="text: title, click: show">Another action</a>
+                                </div>
+                            </div>
+                        </li>
                     </ul>
-                </form>
+                </div>
             </div>
-
-            <div id="map"></div>
-
+        </nav>
+        <div class="container-fluid">
+            <div class="row">
+                <div id="map"></div>
+            </div>
         </div>
-    </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script type="text/javascript" src="js/knockout-3.4.2.js"></script>
-    <script src="js/data.js"></script>
-    <script type="text/javascript" src="js/main.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCzvsr0e94zenMFlGePE-ywIdt4VoUEy7c&callback=initMap" async defer></script>
-</body>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script type="text/javascript" src="js/knockout-3.4.2.js"></script>
+        <script type="text/javascript" src="js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/main.js"></script>
+        <script src="js/data.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCzvsr0e94zenMFlGePE-ywIdt4VoUEy7c&callback=initMap" async defer></script>
+    </body>
 </html>

@@ -36,19 +36,5 @@ var locations = [
             lng: -122.0840406
         }
     },
-    {
-        title: ' Sherman Oaks Elementary School',
-        location: {
-            lat: 37.309816,
-            lng: -121.92491
-        }
-    },
 
-    {
-        title: ' Willow Glen Elementary School',
-        location: {
-            lat: 37.302492,
-            lng: -121.897172
-        }
-    },
 ];
