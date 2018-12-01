@@ -28,6 +28,11 @@ function initMap() {
     ko.applyBindings(new ViewModel());
 }
 
+// handle map error
+function googleMapsError() {
+    alert('An error occurred with Google Maps!');
+}
+
 // Location Model
 var LocationMarker = function(data) {
     // Foursquare credentials
